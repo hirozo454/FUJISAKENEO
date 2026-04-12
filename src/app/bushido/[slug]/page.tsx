@@ -2,162 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { use, useEffect, useRef, useState, useCallback } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { bushidoDesigns } from "@/data/bushido-data";
 import { notFound } from "next/navigation";
-
-function GalleryViewer({
-  images,
-  labels,
-}: {
-  images: string[];
-  labels: string[];
-}) {
-  const [current, setCurrent] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const isTransparent = images[current].endsWith(".png");
-
-  const goTo = useCallback(
-    (idx: number) => {
-      if (idx === current || isTransitioning) return;
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrent(idx);
-        setIsTransitioning(false);
-      }, 400);
-    },
-    [current, isTransitioning]
-  );
-
-  const next = useCallback(() => {
-    goTo((current + 1) % images.length);
-  }, [current, images.length, goTo]);
-
-  const prev = useCallback(() => {
-    goTo((current - 1 + images.length) % images.length);
-  }, [current, images.length, goTo]);
-
-  return (
-    <div className="relative flex items-center justify-center py-32 px-8 lg:py-0 min-h-[70vh]">
-      {/* Radial glow backdrop */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(201,168,76,0.05)_0%,transparent_60%)]" />
-
-      {/* Ambient particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="particle particle-1" />
-        <div className="particle particle-2" />
-        <div className="particle particle-3" />
-        <div className="particle particle-4" />
-        <div className="particle particle-5" />
-      </div>
-
-      {/* Main image area */}
-      <div
-        className={`transition-all duration-400 ease-out ${
-          isTransitioning
-            ? "opacity-0 scale-[0.96]"
-            : "opacity-100 scale-100"
-        }`}
-      >
-        {isTransparent ? (
-          /* Transparent PNG — floating bottle */
-          <div
-            className="bottle-float-hero relative"
-            style={{
-              width: "clamp(300px, 55vw, 580px)",
-              aspectRatio: "3/5",
-            }}
-          >
-            <Image
-              src={images[current]}
-              alt="Bottle"
-              fill
-              priority={current === 0}
-              className="object-contain bottle-shadow"
-              sizes="(max-width: 1024px) 90vw, 50vw"
-            />
-          </div>
-        ) : (
-          /* Scene / background image — full frame */
-          <div className="relative w-[clamp(320px,50vw,600px)] aspect-[3/4] overflow-hidden rounded-sm shadow-2xl">
-            <Image
-              src={images[current]}
-              alt="Scene"
-              fill
-              priority={current === 0}
-              className="object-cover"
-              sizes="(max-width: 1024px) 90vw, 50vw"
-            />
-            <div className="absolute inset-0 ring-1 ring-inset ring-gold/10 rounded-sm" />
-          </div>
-        )}
-      </div>
-
-      {/* Glow effects */}
-      {isTransparent && (
-        <>
-          <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[55%] h-[25%] bg-gradient-to-t from-gold/10 via-gold/4 to-transparent rounded-full blur-[60px] bottle-glow" />
-          <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[35%] h-[6%] bg-gold/8 rounded-full blur-[25px]" />
-        </>
-      )}
-
-      {/* Navigation arrows */}
-      <button
-        onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-off-white/40 hover:text-gold transition-colors bg-ink/30 hover:bg-ink/60 backdrop-blur-sm rounded-full border border-gold/10"
-        aria-label="Previous image"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M10 3L5 8L10 13" />
-        </svg>
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-off-white/40 hover:text-gold transition-colors bg-ink/30 hover:bg-ink/60 backdrop-blur-sm rounded-full border border-gold/10"
-        aria-label="Next image"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M6 3L11 8L6 13" />
-        </svg>
-      </button>
-
-      {/* Thumbnail strip */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 items-center">
-        {images.map((img, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className={`relative overflow-hidden transition-all duration-300 border ${
-              i === current
-                ? "w-14 h-14 border-gold/60 ring-1 ring-gold/30"
-                : "w-11 h-11 border-gold/15 opacity-50 hover:opacity-90"
-            } rounded-sm`}
-            aria-label={labels[i]}
-          >
-            <Image
-              src={img}
-              alt={labels[i]}
-              fill
-              className={`${img.endsWith(".png") ? "object-contain p-0.5" : "object-cover"}`}
-              sizes="56px"
-            />
-          </button>
-        ))}
-      </div>
-
-      {/* Label */}
-      <div
-        className={`absolute top-28 left-1/2 -translate-x-1/2 transition-all duration-400 ${
-          isTransitioning ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        <p className="text-[9px] tracking-[4px] uppercase text-gold/50 text-center">
-          {labels[current]}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 export default function BushidoDetailPage({
   params,
@@ -167,6 +14,12 @@ export default function BushidoDetailPage({
   const { slug } = use(params);
   const design = bushidoDesigns.find((d) => d.slug === slug);
   const sectionRef = useRef<HTMLElement>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -180,7 +33,7 @@ export default function BushidoDetailPage({
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.08 }
     );
     el.querySelectorAll(".reveal").forEach((child) => observer.observe(child));
     return () => observer.disconnect();
@@ -198,17 +51,10 @@ export default function BushidoDetailPage({
   const nextDesign =
     bushidoDesigns[(currentIndex + 1) % bushidoDesigns.length];
 
-  const galleryImages = [design.image, design.imageScene, design.imageDark];
-  const galleryLabels = [
-    "Product — Transparent",
-    "Atmosphere — Scene",
-    "Studio — Dark",
-  ];
-
   return (
     <main ref={sectionRef} className="bg-ink min-h-screen">
-      {/* Back nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-5 bg-ink/90 backdrop-blur-[12px] border-b border-gold/12">
+      {/* Nav */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-12 py-5 bg-ink/80 backdrop-blur-[16px] border-b border-gold/8">
         <Link
           href="/#bushido"
           className="font-serif text-xs tracking-[5px] uppercase text-gold no-underline hover:text-gold-lt transition-colors"
@@ -218,51 +64,108 @@ export default function BushidoDetailPage({
         <div className="flex gap-8 items-center">
           <Link
             href={`/bushido/${prevDesign.slug}`}
-            className="text-[10px] tracking-[3px] uppercase text-off-white/50 no-underline hover:text-gold transition-colors"
+            className="text-[10px] tracking-[3px] uppercase text-off-white/40 no-underline hover:text-gold transition-colors"
           >
             ← {prevDesign.letter}
           </Link>
-          <span className="text-[10px] tracking-[3px] uppercase text-gold">
+          <span className="text-[10px] tracking-[3px] uppercase text-gold/80">
             Design {design.letter}
           </span>
           <Link
             href={`/bushido/${nextDesign.slug}`}
-            className="text-[10px] tracking-[3px] uppercase text-off-white/50 no-underline hover:text-gold transition-colors"
+            className="text-[10px] tracking-[3px] uppercase text-off-white/40 no-underline hover:text-gold transition-colors"
           >
             {nextDesign.letter} →
           </Link>
         </div>
       </nav>
 
-      {/* Hero Section with Gallery */}
+      {/* ===== HERO — Opus One style cinematic bottle reveal ===== */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background kanji */}
+        {/* Pitch black base with subtle radial spotlight */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_35%_55%,rgba(30,26,20,1)_0%,rgba(14,12,10,1)_70%)]" />
+
+        {/* Background kanji — very subtle */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-          <span className="font-jp text-[clamp(200px,40vw,500px)] font-extralight text-off-white kanji-breathe">
+          <span className="font-jp text-[clamp(220px,42vw,550px)] font-extralight text-off-white kanji-breathe">
             {design.virtueJp}
           </span>
         </div>
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 w-full min-h-screen">
-          {/* Left: Gallery Viewer */}
-          <GalleryViewer images={galleryImages} labels={galleryLabels} />
+        {/* Content grid */}
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-0 w-full min-h-screen">
 
-          {/* Right: Content */}
-          <div className="flex flex-col justify-center px-[clamp(32px,5vw,80px)] py-[clamp(40px,5vw,80px)] lg:pr-[clamp(60px,8vw,140px)]">
+          {/* LEFT — Cinematic bottle presentation */}
+          <div className="relative flex items-center justify-center min-h-[80vh] lg:min-h-screen max-lg:order-1">
+
+            {/* Spotlight cone from above */}
+            <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[45%] h-[70%] transition-opacity duration-[3s] delay-300 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`}>
+              <div className="w-full h-full bg-[conic-gradient(from_180deg,transparent_35%,rgba(201,168,76,0.04)_45%,rgba(248,245,238,0.06)_50%,rgba(201,168,76,0.04)_55%,transparent_65%)]" />
+            </div>
+
+            {/* Floor reflection pool */}
+            <div className={`absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[55%] h-[18%] rounded-full transition-all duration-[2.5s] delay-700 ${
+              loaded ? "opacity-100 scale-x-100" : "opacity-0 scale-x-50"
+            }`}>
+              <div className="w-full h-full bg-[radial-gradient(ellipse,rgba(201,168,76,0.10)_0%,rgba(201,168,76,0.04)_40%,transparent_70%)] blur-[8px]" />
+            </div>
+
+            {/* The bottle — emerges from darkness */}
+            <div className={`opus-float relative transition-all ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              loaded
+                ? "opacity-100 translate-y-0 scale-100 duration-[2s] delay-200"
+                : "opacity-0 translate-y-16 scale-[0.92] duration-[0s]"
+            }`}
+              style={{ width: "clamp(280px,48vw,520px)", aspectRatio: "3/5" }}
+            >
+              <Image
+                src={design.image}
+                alt={design.name}
+                fill
+                priority
+                className="object-contain opus-shadow"
+                sizes="(max-width: 1024px) 85vw, 48vw"
+              />
+            </div>
+
+            {/* Warm rim light — left edge */}
+            <div className={`absolute left-[15%] top-[20%] w-[1px] h-[40%] bg-gradient-to-b from-transparent via-gold/15 to-transparent transition-opacity duration-[3s] delay-1000 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`} />
+
+            {/* Cool rim light — right edge */}
+            <div className={`absolute right-[18%] top-[25%] w-[1px] h-[35%] bg-gradient-to-b from-transparent via-off-white/8 to-transparent transition-opacity duration-[3s] delay-1200 ${
+              loaded ? "opacity-100" : "opacity-0"
+            }`} />
+
+            {/* Bottom info — fades in late */}
+            <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 text-center transition-all duration-[1.5s] delay-[2s] ${
+              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}>
+              <p className="text-[9px] tracking-[5px] uppercase text-gold/40">
+                {design.bottle} · {design.capSeal} Seal
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT — Text content */}
+          <div className="flex flex-col justify-center px-[clamp(40px,6vw,100px)] py-[clamp(60px,5vw,100px)] lg:pr-[clamp(60px,8vw,140px)] max-lg:order-2">
+
             <div className="reveal">
-              <span className="inline-block text-[10px] tracking-[4px] uppercase text-crimson border border-crimson/50 px-3.5 py-1.5 mb-6">
-                Design {design.letter} · The Bushido Edition
-              </span>
+              <p className="text-[10px] tracking-[5px] uppercase text-crimson/80 mb-8">
+                The Bushido Edition
+              </p>
             </div>
 
             <div className="reveal d1">
-              <p className="text-[10px] tracking-[5px] uppercase text-gold font-normal mb-2">
-                300ml · {design.bottle}
+              <p className="text-[10px] tracking-[6px] uppercase text-gold/60 font-normal mb-3">
+                Design {design.letter} · 300ml
               </p>
-              <div className="w-[52px] h-px bg-gold mb-8" />
             </div>
 
-            <h1 className="reveal d1 font-serif text-[clamp(36px,5vw,72px)] font-light leading-[1.05] mb-3">
+            <h1 className="reveal d1 font-serif text-[clamp(40px,5.5vw,80px)] font-light leading-[1.02] mb-5 tracking-[-0.02em]">
               {design.name.split("\n").map((line, i) => (
                 <span key={i}>
                   {i === 0 ? line : <><br />{line}</>}
@@ -270,80 +173,77 @@ export default function BushidoDetailPage({
               ))}
             </h1>
 
-            <p className="reveal d2 font-serif text-[clamp(16px,2vw,22px)] italic text-gold-lt/80 mb-2">
+            <div className="reveal d1 w-[40px] h-px bg-gold/40 mb-8" />
+
+            <p className="reveal d2 font-serif text-[clamp(17px,2.2vw,24px)] italic text-gold-lt/60 mb-10 leading-[1.6]">
               &ldquo;{design.subtitle}&rdquo;
             </p>
 
-            <div className="reveal d2 flex items-center gap-4 mb-10 mt-4">
-              <span className="font-jp text-4xl font-extralight text-gold">
+            <div className="reveal d2 flex items-center gap-5 mb-12">
+              <span className="font-jp text-[clamp(36px,4vw,52px)] font-extralight text-gold/70">
                 {design.virtueJp}
               </span>
-              <div className="h-8 w-px bg-gold/30" />
+              <div className="h-10 w-px bg-gold/15" />
               <div>
-                <p className="text-[10px] tracking-[3px] uppercase text-off-white/50">
+                <p className="text-[9px] tracking-[4px] uppercase text-off-white/30 mb-1">
                   Bushido Virtue
                 </p>
-                <p className="font-serif text-lg italic text-off-white/80">
+                <p className="font-serif text-[clamp(16px,1.8vw,20px)] italic text-off-white/70">
                   {design.virtue}
                 </p>
               </div>
             </div>
 
             {/* Tasting Note */}
-            <div className="reveal d2 border-t border-b border-gold/15 py-5 mb-10">
-              <p className="text-[10px] tracking-[3px] uppercase text-gold/60 mb-2">
+            <div className="reveal d3 border-t border-gold/10 pt-8 mb-12">
+              <p className="text-[9px] tracking-[4px] uppercase text-gold/40 mb-3">
                 Tasting Notes
               </p>
-              <p className="font-serif text-[clamp(14px,1.5vw,17px)] italic text-off-white/70">
+              <p className="font-serif text-[clamp(15px,1.6vw,18px)] italic text-off-white/55 leading-[1.8]">
                 {design.tastingNote}
               </p>
             </div>
 
-            {/* Specs */}
-            <div className="reveal d3 grid grid-cols-3 gap-6 mb-10">
-              <div>
-                <p className="text-[9px] tracking-[3px] uppercase text-off-white/35 mb-1">
-                  Volume
-                </p>
-                <p className="font-serif text-sm text-off-white/80">300ml</p>
-              </div>
-              <div>
-                <p className="text-[9px] tracking-[3px] uppercase text-off-white/35 mb-1">
-                  Cap Seal
-                </p>
-                <p className="font-serif text-sm text-off-white/80">
-                  {design.capSeal}
-                </p>
-              </div>
-              <div>
-                <p className="text-[9px] tracking-[3px] uppercase text-off-white/35 mb-1">
-                  Classification
-                </p>
-                <p className="font-serif text-sm text-off-white/80">
-                  純米大吟醸
-                </p>
-              </div>
+            {/* Specs row */}
+            <div className="reveal d3 flex gap-10 text-off-white/40">
+              {[
+                ["Volume", "300ml"],
+                ["Cap Seal", design.capSeal],
+                ["Class", "純米大吟醸"],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <p className="text-[8px] tracking-[3px] uppercase text-off-white/25 mb-1">
+                    {label}
+                  </p>
+                  <p className="font-serif text-[13px] text-off-white/60">{value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 lg:left-[25%] flex flex-col items-center gap-2 transition-all duration-[1.5s] delay-[2.5s] ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}>
+          <div className="w-px h-8 bg-gradient-to-b from-transparent to-gold/30 animate-scroll-pulse" />
+        </div>
       </section>
 
-      {/* Story Section */}
-      <section className="bg-ink3 border-t border-gold/10">
-        <div className="max-w-[1100px] mx-auto px-[clamp(24px,5vw,80px)] py-[clamp(60px,8vw,120px)]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(40px,6vw,100px)]">
+      {/* ===== STORY ===== */}
+      <section className="border-t border-gold/6">
+        <div className="max-w-[1100px] mx-auto px-[clamp(32px,5vw,80px)] py-[clamp(80px,10vw,140px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(48px,7vw,120px)]">
             {/* English */}
             <div>
-              <p className="reveal text-[10px] tracking-[5px] uppercase text-gold-dark font-normal mb-5">
+              <p className="reveal text-[9px] tracking-[5px] uppercase text-gold/50 font-normal mb-6">
                 The Story
               </p>
-              <div className="reveal d1 w-[52px] h-px bg-gold mb-8" />
+              <div className="reveal d1 w-[32px] h-px bg-gold/30 mb-10" />
               {design.descriptionEn.map((p, i) => (
                 <p
                   key={i}
-                  className={`reveal ${
-                    i > 0 ? "d1" : ""
-                  } text-[clamp(15px,1.8vw,17px)] leading-[2] text-off-white/65 mb-6 font-serif`}
+                  className={`reveal ${i > 0 ? "d1" : ""} text-[clamp(15px,1.7vw,17px)] leading-[2.1] text-off-white/55 mb-7 font-serif`}
                 >
                   {p}
                 </p>
@@ -351,17 +251,15 @@ export default function BushidoDetailPage({
             </div>
 
             {/* Japanese */}
-            <div className="lg:border-l lg:border-gold/10 lg:pl-[clamp(30px,4vw,60px)]">
-              <p className="reveal text-[10px] tracking-[5px] uppercase text-gold-dark font-normal mb-5 font-jp">
+            <div className="lg:border-l lg:border-gold/8 lg:pl-[clamp(36px,5vw,72px)]">
+              <p className="reveal text-[9px] tracking-[5px] uppercase text-gold/50 font-normal mb-6 font-jp">
                 物語
               </p>
-              <div className="reveal d1 w-[52px] h-px bg-gold mb-8" />
+              <div className="reveal d1 w-[32px] h-px bg-gold/30 mb-10" />
               {design.descriptionJp.map((p, i) => (
                 <p
                   key={i}
-                  className={`reveal ${
-                    i > 0 ? "d1" : ""
-                  } text-[clamp(14px,1.6vw,16px)] leading-[2.2] text-off-white/55 mb-6 font-jp font-extralight`}
+                  className={`reveal ${i > 0 ? "d1" : ""} text-[clamp(14px,1.5vw,16px)] leading-[2.3] text-off-white/45 mb-7 font-jp font-extralight`}
                 >
                   {p}
                 </p>
@@ -371,45 +269,45 @@ export default function BushidoDetailPage({
         </div>
       </section>
 
-      {/* Navigation to other designs */}
-      <section className="border-t border-gold/10">
-        <div className="max-w-[1240px] mx-auto px-[clamp(24px,5vw,60px)] py-[clamp(48px,6vw,80px)]">
-          <p className="reveal text-[10px] tracking-[5px] uppercase text-gold font-normal mb-8 text-center">
+      {/* ===== COLLECTION NAV ===== */}
+      <section className="border-t border-gold/6">
+        <div className="max-w-[1240px] mx-auto px-[clamp(24px,5vw,60px)] py-[clamp(56px,7vw,90px)]">
+          <p className="reveal text-[9px] tracking-[5px] uppercase text-gold/40 font-normal mb-10 text-center">
             Explore the Collection
           </p>
-          <div className="grid grid-cols-4 sm:grid-cols-7 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-5">
             {bushidoDesigns.map((d) => (
               <Link
                 href={`/bushido/${d.slug}`}
                 key={d.letter}
-                className={`reveal group no-underline block ${
+                className={`reveal group no-underline block transition-all duration-500 ${
                   d.slug === slug
                     ? "opacity-100"
-                    : "opacity-60 hover:opacity-100"
-                } transition-opacity duration-300`}
+                    : "opacity-40 hover:opacity-90"
+                }`}
               >
                 <div className="relative aspect-[3/5] overflow-hidden mb-2">
                   <Image
                     src={d.image}
                     alt={d.name}
                     fill
-                    className={`object-contain transition-all duration-500 ${
+                    className={`object-contain transition-all duration-700 ${
                       d.slug === slug
-                        ? "scale-100 bottle-shadow"
-                        : "scale-[0.85] group-hover:scale-100 opacity-70 group-hover:opacity-100"
+                        ? "scale-100 opus-shadow"
+                        : "scale-[0.8] group-hover:scale-[0.95]"
                     }`}
                     sizes="120px"
                   />
                   {d.slug === slug && (
-                    <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-gold rounded-full" />
+                    <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gold/50" />
                   )}
                 </div>
                 <p
-                  className={`text-[8px] tracking-[2px] uppercase text-center ${
+                  className={`text-[7px] tracking-[2px] uppercase text-center ${
                     d.slug === slug
-                      ? "text-gold"
-                      : "text-off-white/40 group-hover:text-off-white/70"
-                  } transition-colors duration-300`}
+                      ? "text-gold/70"
+                      : "text-off-white/25 group-hover:text-off-white/50"
+                  } transition-colors duration-500`}
                 >
                   {d.letter} · {d.name.replace("\n", " ")}
                 </p>
@@ -419,34 +317,34 @@ export default function BushidoDetailPage({
         </div>
       </section>
 
-      {/* Prev / Next navigation */}
-      <section className="border-t border-gold/10">
+      {/* ===== PREV / NEXT ===== */}
+      <section className="border-t border-gold/6">
         <div className="grid grid-cols-2">
           <Link
             href={`/bushido/${prevDesign.slug}`}
-            className="group no-underline relative overflow-hidden py-16 px-[clamp(24px,4vw,60px)] border-r border-gold/10 hover:bg-ink3/50 transition-colors duration-500"
+            className="group no-underline relative overflow-hidden py-20 px-[clamp(32px,5vw,72px)] border-r border-gold/6 hover:bg-ink3/30 transition-colors duration-700"
           >
-            <p className="text-[10px] tracking-[3px] uppercase text-off-white/35 mb-2">
+            <p className="text-[9px] tracking-[3px] uppercase text-off-white/25 mb-3">
               ← Previous
             </p>
-            <p className="font-serif text-[clamp(20px,3vw,32px)] font-light text-off-white/70 group-hover:text-gold transition-colors duration-300">
+            <p className="font-serif text-[clamp(22px,3.5vw,36px)] font-light text-off-white/50 group-hover:text-gold/80 transition-colors duration-500">
               {prevDesign.name.replace("\n", " ")}
             </p>
-            <p className="text-xs text-off-white/30 mt-1 font-jp">
+            <p className="text-[11px] text-off-white/20 mt-2 font-jp">
               Design {prevDesign.letter} · {prevDesign.virtueJp}
             </p>
           </Link>
           <Link
             href={`/bushido/${nextDesign.slug}`}
-            className="group no-underline relative overflow-hidden py-16 px-[clamp(24px,4vw,60px)] text-right hover:bg-ink3/50 transition-colors duration-500"
+            className="group no-underline relative overflow-hidden py-20 px-[clamp(32px,5vw,72px)] text-right hover:bg-ink3/30 transition-colors duration-700"
           >
-            <p className="text-[10px] tracking-[3px] uppercase text-off-white/35 mb-2">
+            <p className="text-[9px] tracking-[3px] uppercase text-off-white/25 mb-3">
               Next →
             </p>
-            <p className="font-serif text-[clamp(20px,3vw,32px)] font-light text-off-white/70 group-hover:text-gold transition-colors duration-300">
+            <p className="font-serif text-[clamp(22px,3.5vw,36px)] font-light text-off-white/50 group-hover:text-gold/80 transition-colors duration-500">
               {nextDesign.name.replace("\n", " ")}
             </p>
-            <p className="text-xs text-off-white/30 mt-1 font-jp">
+            <p className="text-[11px] text-off-white/20 mt-2 font-jp">
               Design {nextDesign.letter} · {nextDesign.virtueJp}
             </p>
           </Link>
@@ -454,14 +352,14 @@ export default function BushidoDetailPage({
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gold/10 py-10 text-center">
+      <footer className="border-t border-gold/6 py-12 text-center">
         <Link
           href="/#bushido"
-          className="text-[10px] tracking-[4px] uppercase text-off-white/40 no-underline hover:text-gold transition-colors"
+          className="text-[9px] tracking-[4px] uppercase text-off-white/30 no-underline hover:text-gold/60 transition-colors"
         >
           ← Back to Full Collection
         </Link>
-        <p className="text-[10px] text-off-white/20 mt-4 tracking-[2px]">
+        <p className="text-[9px] text-off-white/15 mt-5 tracking-[3px]">
           AMACHI HOSHISORA · Mt. Fuji Sake Project
         </p>
       </footer>

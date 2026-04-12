@@ -93,93 +93,80 @@ export default function Bushido() {
           </div>
         </div>
 
-        {/* Floating Image Showcase - transparent bg bottles */}
-        <div className="relative overflow-hidden min-h-[clamp(360px,55vw,800px)] max-md:order-1 bg-ink2">
-          {/* Subtle radial background */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,168,76,0.04)_0%,transparent_70%)]" />
+        {/* Opus One style — cinematic bottle showcase */}
+        <div className="relative overflow-hidden min-h-[clamp(360px,55vw,800px)] max-md:order-1 bg-ink">
+          {/* Spotlight from above */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[65%] bg-[conic-gradient(from_180deg,transparent_35%,rgba(201,168,76,0.03)_45%,rgba(248,245,238,0.05)_50%,rgba(201,168,76,0.03)_55%,transparent_65%)]" />
 
-          {/* Current bottle - crossfade layer A */}
+          {/* Current bottle — crossfade A */}
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-900 ease-in-out ${
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[1.2s] ease-in-out ${
               phase === "crossfade" ? "opacity-0" : "opacity-100"
             }`}
           >
-            <div className="bottle-float relative w-[90%] max-w-[480px] aspect-[3/5]">
+            <div className="opus-float relative w-[85%] max-w-[440px] aspect-[3/5]">
               <Image
                 src={bushidoDesigns[currentImage].image}
                 alt={bushidoDesigns[currentImage].name}
                 fill
-                className="object-contain bottle-shadow"
-                sizes="(max-width: 768px) 90vw, 45vw"
+                className="object-contain opus-shadow"
+                sizes="(max-width: 768px) 85vw, 42vw"
                 priority
               />
             </div>
           </div>
 
-          {/* Next bottle - crossfade layer B */}
+          {/* Next bottle — crossfade B */}
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-900 ease-in-out ${
+            className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[1.2s] ease-in-out ${
               phase === "crossfade" ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div className="bottle-float relative w-[90%] max-w-[480px] aspect-[3/5]">
+            <div className="opus-float relative w-[85%] max-w-[440px] aspect-[3/5]">
               <Image
                 src={bushidoDesigns[nextImage].image}
                 alt={bushidoDesigns[nextImage].name}
                 fill
-                className="object-contain bottle-shadow"
-                sizes="(max-width: 768px) 90vw, 45vw"
+                className="object-contain opus-shadow"
+                sizes="(max-width: 768px) 85vw, 42vw"
               />
             </div>
           </div>
 
-          {/* Hovered bottle overlay */}
+          {/* Hovered bottle */}
           {hoveredDesign !== null && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 animate-[bottleReveal_0.5s_ease-out_both]">
-              <div className="bottle-float relative w-[90%] max-w-[480px] aspect-[3/5]">
+            <div className="absolute inset-0 flex items-center justify-center z-10 animate-[bottleReveal_0.6s_ease-out_both]">
+              <div className="opus-float relative w-[85%] max-w-[440px] aspect-[3/5]">
                 <Image
                   src={bushidoDesigns[hoveredDesign].image}
                   alt={bushidoDesigns[hoveredDesign].name}
                   fill
-                  className="object-contain bottle-shadow"
-                  sizes="(max-width: 768px) 90vw, 45vw"
+                  className="object-contain opus-shadow"
+                  sizes="(max-width: 768px) 85vw, 42vw"
                 />
               </div>
             </div>
           )}
 
-          {/* Reflection / glow effects */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[60%] h-[30%] bg-gradient-to-t from-gold/10 via-gold/4 to-transparent rounded-full blur-[60px] bottle-glow" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40%] h-[8%] bg-gold/6 rounded-full blur-[20px]" />
+          {/* Floor reflection */}
+          <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 w-[50%] h-[15%] pointer-events-none">
+            <div className="w-full h-full bg-[radial-gradient(ellipse,rgba(201,168,76,0.08)_0%,rgba(201,168,76,0.03)_40%,transparent_70%)] blur-[6px] bottle-glow" />
           </div>
 
-          {/* Ambient particles */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="particle particle-1" />
-            <div className="particle particle-2" />
-            <div className="particle particle-3" />
-            <div className="particle particle-4" />
-            <div className="particle particle-5" />
-          </div>
-
-          {/* Design info overlay */}
-          <div className={`absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-ink2/95 via-ink2/50 to-transparent transition-all duration-500 ${
-            phase === "crossfade" && hoveredDesign === null ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+          {/* Design info — minimal */}
+          <div className={`absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent transition-all duration-700 ${
+            phase === "crossfade" && hoveredDesign === null ? "opacity-0" : "opacity-100"
           }`}>
-            <p className="text-[10px] tracking-[4px] uppercase text-gold mb-1">
+            <p className="text-[9px] tracking-[4px] uppercase text-gold/50 mb-1">
               Design {bushidoDesigns[activeDesign].letter} · {bushidoDesigns[activeDesign].virtue}
             </p>
-            <h3 className="font-serif text-2xl font-light mb-1">
+            <h3 className="font-serif text-xl font-light text-off-white/80 mb-0.5">
               {bushidoDesigns[activeDesign].name.replace("\n", " ")}
             </h3>
-            <p className="text-xs text-off-white/50 font-jp">
-              {bushidoDesigns[activeDesign].virtueJp} · {bushidoDesigns[activeDesign].bottle}
+            <p className="text-[11px] text-off-white/30 font-jp">
+              {bushidoDesigns[activeDesign].virtueJp}
             </p>
           </div>
-
-          {/* Edge gradients */}
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ink3/20 pointer-events-none max-md:bg-gradient-to-b max-md:from-transparent max-md:via-[50%] max-md:to-ink2/30" />
         </div>
       </div>
     </section>
