@@ -395,9 +395,20 @@ export default function BushidoDetailPage({
         >
           ← Back to Collection
         </Link>
-        <p className="text-[10px] text-off-white/20 mt-6 tracking-[3px]">
-          AMACHI HOSHISORA · Mt. Fuji Sake Project
-        </p>
+        <div className="mt-8">
+          <p className="text-[12px] text-off-white/30 tracking-[2px]">
+            Mt. Fuji Sake Project
+          </p>
+          <p className="text-[11px] text-off-white/20 mt-1 tracking-[1px]">
+            By KONDO PHARMACY Co., Ltd.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-block text-[10px] tracking-[3px] uppercase text-gold/40 no-underline hover:text-gold/70 transition-colors mt-3"
+          >
+            Contact →
+          </Link>
+        </div>
       </footer>
     </main>
   );
