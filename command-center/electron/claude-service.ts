@@ -52,7 +52,7 @@ export function registerClaudeIpc() {
         model: 'claude-opus-4-6',
         max_tokens: 64000,
         system: SYSTEM_PROMPT,
-        thinking: { type: 'adaptive' },
+        thinking: { type: 'adaptive' } as unknown as Anthropic.ThinkingConfigParam,
         messages: req.messages.map((m) => ({
           role: m.role,
           content: m.content,
