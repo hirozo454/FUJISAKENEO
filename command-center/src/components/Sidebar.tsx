@@ -9,8 +9,9 @@ import {
   ChevronRight,
   ChevronDown,
   Box,
+  Home,
 } from 'lucide-react';
-import { useStore } from '@/lib/store';
+import { useStore, type ViewMode } from '@/lib/store';
 import type { TreeNode } from '@/types';
 
 const iconMap = {
@@ -20,11 +21,23 @@ const iconMap = {
   inbox: Inbox,
   calendar: Calendar,
   archive: Archive,
+  home: Home,
+  product: Box,
 } as const;
 
+function resolveNode(id: string): { view: ViewMode; productId?: string } {
+  if (id === 'home') return { view: 'home' };
+  if (id === 'inbox') return { view: 'inbox' };
+  if (id === 'today') return { view: 'today' };
+  if (id === 'archive') return { view: 'archive' };
+  if (id.startsWith('product:')) return { view: 'product', productId: id.slice(8) };
+  if (id.startsWith('tag-')) return { view: 'tag' };
+  return { view: 'home' };
+}
+
 function TreeItem({ node, depth = 0 }: { node: TreeNode; depth?: number }) {
-  const [open, setOpen] = useState(depth < 1);
-  const { selectedNodeId, setSelectedNodeId } = useStore();
+  const [open, setOpen] = useState(depth < 1 || node.id === 'products');
+  const { selectedNodeId, setSelectedNode } = useStore();
   const hasChildren = !!node.children?.length;
   const Icon = hasChildren && open ? FolderOpen : iconMap[node.icon ?? 'folder'];
   const active = selectedNodeId === node.id;
@@ -36,7 +49,8 @@ function TreeItem({ node, depth = 0 }: { node: TreeNode; depth?: number }) {
         style={{ paddingLeft: depth * 12 + 8 }}
         onClick={() => {
           if (hasChildren) setOpen((o) => !o);
-          setSelectedNodeId(node.id);
+          const { view, productId } = resolveNode(node.id);
+          setSelectedNode(node.id, view, productId);
         }}
       >
         <span className="w-4 flex items-center justify-center">

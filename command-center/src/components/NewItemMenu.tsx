@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { Mail, CalendarPlus, FolderPlus, CheckSquare, Zap } from 'lucide-react';
+import { Mail, CalendarPlus, FolderPlus, CheckSquare, Zap, Package } from 'lucide-react';
 import { useStore } from '@/lib/store';
 
 const actions = [
+  { id: 'product', icon: Package, label: 'プロダクト', hint: 'ハブに追加' },
   { id: 'mail', icon: Mail, label: 'メール下書き', hint: 'Gmail 新規' },
   { id: 'event', icon: CalendarPlus, label: '予定を追加', hint: 'Calendar' },
   { id: 'project', icon: FolderPlus, label: 'プロジェクト', hint: '新規作成' },
@@ -11,7 +12,8 @@ const actions = [
 ];
 
 export function NewItemMenu() {
-  const { toggleNewMenu, setToggleNewMenu, addProject } = useStore();
+  const { toggleNewMenu, setToggleNewMenu, addProject, addProduct, setSelectedNode } =
+    useStore();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,6 +40,21 @@ export function NewItemMenu() {
           nextAction: '最初のステップを決める',
           tags: [],
         });
+      }
+    } else if (id === 'product') {
+      const name = prompt('プロダクト名を入力:');
+      if (name) {
+        const description = prompt('簡単な説明:') || '';
+        addProduct({
+          id: `custom-${Date.now()}`,
+          name,
+          description,
+          status: 'planned',
+          gradient: 'from-slate-500 to-zinc-700',
+          icon: 'wine',
+          category: 'ops',
+        });
+        setSelectedNode('home', 'home');
       }
     } else {
       alert(`"${id}" の作成フローはここで起動します（今後実装）`);

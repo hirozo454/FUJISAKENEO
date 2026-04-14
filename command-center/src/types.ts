@@ -1,9 +1,35 @@
 export interface TreeNode {
   id: string;
   label: string;
-  icon?: 'folder' | 'project' | 'tag' | 'inbox' | 'calendar' | 'archive';
+  icon?:
+    | 'folder'
+    | 'project'
+    | 'tag'
+    | 'inbox'
+    | 'calendar'
+    | 'archive'
+    | 'home'
+    | 'product';
   children?: TreeNode[];
   meta?: { count?: number; color?: string };
+}
+
+export type ProductStatus = 'active' | 'development' | 'planned' | 'paused';
+
+export interface Product {
+  id: string;
+  name: string;
+  shortName?: string;
+  description: string;
+  status: ProductStatus;
+  /** Tailwind gradient class pair e.g. "from-sky-500 to-indigo-600" */
+  gradient: string;
+  /** Lucide icon name */
+  icon: string;
+  category: 'site' | 'automation' | 'ai' | 'data' | 'design' | 'ops';
+  url?: string;
+  /** primary metric displayed on card */
+  stat?: { label: string; value: string };
 }
 
 export interface MailMessage {
