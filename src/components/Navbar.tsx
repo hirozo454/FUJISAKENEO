@@ -1,15 +1,18 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
 const navLinks = [
-  { href: "#story", label: "Story" },
-  { href: "#collection", label: "Collection" },
-  { href: "#bushido", label: "Bushido" },
-  { href: "#terroir", label: "Terroir" },
+  { href: "/story", label: "Story" },
+  { href: "/collection", label: "Collection" },
+  { href: "/bushido", label: "Bushido" },
+  { href: "/terroir", label: "Terroir" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -32,13 +35,23 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    const resetMenus = () => {
+      setDrawerOpen(false);
+      setLoginOpen(false);
+      document.body.style.overflow = "";
+    };
+
+    window.addEventListener("pageshow", resetMenus);
+
     return () => {
+      window.removeEventListener("pageshow", resetMenus);
       document.body.style.overflow = "";
     };
   }, []);
 
-  const closeDrawer = () => {
+  const closeMenus = () => {
     setDrawerOpen(false);
+    setLoginOpen(false);
     document.body.style.overflow = "";
   };
 
@@ -47,6 +60,14 @@ export default function Navbar() {
       document.body.style.overflow = !prev ? "hidden" : "";
       return !prev;
     });
+  };
+
+  const isActiveLink = (href: string) => {
+    if (href === "/bushido") {
+      return pathname === href || pathname.startsWith("/bushido/");
+    }
+
+    return pathname === href;
   };
 
   return (
@@ -58,29 +79,36 @@ export default function Navbar() {
             : "px-12 py-6"
           }`}
       >
-        <a
-          href="#"
+        <Link
+          href="/"
           className="font-serif text-[13px] tracking-[5px] uppercase text-gold no-underline shrink-0"
         >
           Amachi Hoshisora
-        </a>
+        </Link>
 
         <ul className="hidden md:flex gap-10 list-none items-center">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
-                className="text-[12px] tracking-[3px] uppercase text-off-white/75 no-underline hover:text-gold transition-colors duration-300"
+                onClick={closeMenus}
+                className={`text-[12px] tracking-[3px] uppercase no-underline transition-colors duration-300 ${
+                  isActiveLink(link.href)
+                    ? "text-gold"
+                    : "text-off-white/75 hover:text-gold"
+                }`}
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
 
           {/* Login dropdown */}
           <li className="relative" ref={loginRef}>
             <button
+              type="button"
               onClick={() => setLoginOpen((v) => !v)}
+              aria-expanded={loginOpen}
               className="flex items-center gap-2 text-[11px] tracking-[3px] uppercase text-off-white/70 hover:text-gold transition-colors duration-300 bg-transparent border-none cursor-pointer"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -103,8 +131,9 @@ export default function Navbar() {
                 : "opacity-0 invisible -translate-y-2"
             }`}>
               <div className="p-1">
-                <a
+                <Link
                   href="/login/btob"
+                  onClick={closeMenus}
                   className="flex items-center gap-3 px-5 py-3.5 no-underline text-off-white/70 hover:text-gold hover:bg-gold/5 transition-all duration-300"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -115,10 +144,11 @@ export default function Navbar() {
                     <p className="text-[11px] tracking-[2px] uppercase font-normal">BtoB Login</p>
                     <p className="text-[9px] text-off-white/35 mt-0.5">For business partners</p>
                   </div>
-                </a>
+                </Link>
                 <div className="h-px bg-gold/8 mx-4" />
-                <a
+                <Link
                   href="/login/member"
+                  onClick={closeMenus}
                   className="flex items-center gap-3 px-5 py-3.5 no-underline text-off-white/70 hover:text-gold hover:bg-gold/5 transition-all duration-300"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -129,7 +159,7 @@ export default function Navbar() {
                     <p className="text-[11px] tracking-[2px] uppercase font-normal">Member Login</p>
                     <p className="text-[9px] text-off-white/35 mt-0.5">General membership</p>
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
           </li>
@@ -164,32 +194,36 @@ export default function Navbar() {
           ${drawerOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
         {navLinks.map((link) => (
-          <a
+          <Link
             key={link.href}
             href={link.href}
-            onClick={closeDrawer}
-            className="font-serif text-2xl tracking-[6px] uppercase text-off-white/70 no-underline hover:text-gold transition-colors"
+            onClick={closeMenus}
+            className={`font-serif text-2xl tracking-[6px] uppercase no-underline transition-colors ${
+              isActiveLink(link.href)
+                ? "text-gold"
+                : "text-off-white/70 hover:text-gold"
+            }`}
           >
             {link.label}
-          </a>
+          </Link>
         ))}
 
         <div className="w-[40px] h-px bg-gold/20 my-2" />
 
-        <a
+        <Link
           href="/login/btob"
-          onClick={closeDrawer}
+          onClick={closeMenus}
           className="text-[13px] tracking-[4px] uppercase text-gold/60 no-underline hover:text-gold transition-colors"
         >
           BtoB Login
-        </a>
-        <a
+        </Link>
+        <Link
           href="/login/member"
-          onClick={closeDrawer}
+          onClick={closeMenus}
           className="text-[13px] tracking-[4px] uppercase text-off-white/50 no-underline hover:text-gold transition-colors"
         >
           Member Login
-        </a>
+        </Link>
       </div>
     </>
   );
