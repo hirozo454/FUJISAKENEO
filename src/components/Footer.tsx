@@ -1,16 +1,16 @@
 import Link from "next/link";
 
 const collectionLinks = [
-  { label: "Hoshisora — Gold", href: "#collection" },
-  { label: "Hoshisora — Blue", href: "#collection" },
-  { label: "Bushido Edition A–G", href: "#bushido" },
-  { label: "Limited Releases", href: "#collection" },
+  { label: "Hoshisora — Gold", href: "/collection" },
+  { label: "Hoshisora — Blue", href: "/collection" },
+  { label: "Bushido Edition A–G", href: "/bushido" },
+  { label: "Limited Releases", href: "/collection" },
 ];
 
 const aboutLinks = [
-  { label: "Our Story", href: "#story" },
-  { label: "Mt. Fuji Terroir", href: "#terroir" },
-  { label: "Bushido Philosophy", href: "#bushido" },
+  { label: "Our Story", href: "/story" },
+  { label: "Mt. Fuji Terroir", href: "/terroir" },
+  { label: "Bushido Philosophy", href: "/bushido" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -42,9 +42,9 @@ export default function Footer() {
           <ul className="list-none space-y-3">
             {collectionLinks.map((link) => (
               <li key={link.label}>
-                <a href={link.href} className="text-[15px] font-light text-off-white/55 no-underline hover:text-gold transition-colors duration-300">
+                <Link href={link.href} className="text-[15px] font-light text-off-white/55 no-underline hover:text-gold transition-colors duration-300">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

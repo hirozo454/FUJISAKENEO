@@ -19,15 +19,15 @@ export default function Hero() {
           Mt. Fuji Sake Project
         </p>
         <h1 className="font-serif font-light leading-[0.95] tracking-tight text-off-white text-[clamp(52px,12vw,130px)] mb-2">
-          Amachi<br />
-          <em className="italic text-gold-lt">Hoshisora</em>
+          Mt. Fuji<br />
+          <em className="italic text-gold-lt">Sake</em>
         </h1>
         <p className="font-jp text-[clamp(18px,3.5vw,38px)] font-extralight tracking-[10px] text-off-white/65 my-3 mb-9">
-          天地星空
+          富士山日本酒
         </p>
         <div className="w-px h-16 bg-gradient-to-b from-gold to-transparent mx-auto mb-7" />
         <p className="text-[clamp(15px,2vw,18px)] italic text-off-white/70 tracking-wide">
-          Born of Stars. Brewed in Silence.
+          Brewed beneath Fuji. Refined with Japanese spirit.
         </p>
       </div>
 
