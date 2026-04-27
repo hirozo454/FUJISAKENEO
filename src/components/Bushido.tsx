@@ -15,7 +15,7 @@ import { bushidoDesigns, type BushidoDesign } from "@/data/bushido-data";
 const IMAGE_CYCLE_INTERVAL_MS = 6000;
 const CROSSFADE_DURATION_MS = 1200;
 const INITIAL_PARALLAX_TRANSFORM = "scale(1.1) translateY(0px)";
-const BOTTLE_IMAGE_SIZES = "(max-width: 1024px) 75vw, 38vw";
+const BOTTLE_IMAGE_SIZES = "(max-width: 1024px) 90vw, 50vw";
 const SCENE_IMAGE_CLASS =
   "object-cover transition-opacity duration-[1.5s] ease-in-out brightness-[0.35] saturate-[0.8]";
 const BOTTLE_LAYER_CLASS =
@@ -48,7 +48,7 @@ type BottleImageProps = {
 
 function BottleImage({ design, priority = false }: BottleImageProps) {
   return (
-    <div className="opus-float relative w-[75%] max-w-[380px] aspect-[3/5]">
+    <div className="opus-float relative w-[90%] max-w-[570px] aspect-[3/5]">
       <Image
         src={design.image}
         alt={design.name}
@@ -127,12 +127,15 @@ export default function Bushido() {
     null,
   );
   const [videoReady, setVideoReady] = useState(true);
+  const [video2Ready, setVideo2Ready] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const v = videoRef.current;
-    if (!v) return;
-    if (v.readyState >= 2) setVideoReady(true);
+    if (v && v.readyState >= 2) setVideoReady(true);
+    const v2 = video2Ref.current;
+    if (v2 && v2.readyState >= 2) setVideo2Ready(true);
   }, []);
 
   const currentDesign = bushidoDesigns[currentImage];
@@ -316,6 +319,28 @@ export default function Bushido() {
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* LEFT — Cinematic bottle on black */}
         <div className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-ink lg:min-h-screen">
+          {/* Black & white samurai video background (auto-fallback if missing) */}
+          <video
+            ref={video2Ref}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onLoadedData={() => setVideo2Ready(true)}
+            onCanPlay={() => setVideo2Ready(true)}
+            onError={() => setVideo2Ready(false)}
+            className={`absolute inset-0 w-full h-full object-cover [filter:grayscale(1)_brightness(0.35)_contrast(1.15)] transition-opacity duration-[1500ms] ${
+              video2Ready ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <source src="/videos/samurai-bw.mp4" type="video/mp4" />
+            <source src="/videos/samurai-bw.webm" type="video/webm" />
+          </video>
+
+          {/* Vignette over video */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_50%_50%,transparent_30%,rgba(14,12,10,0.75)_100%)] pointer-events-none" />
+
           {/* Spotlight */}
           <div className="absolute top-0 left-1/2 h-[60%] w-[50%] -translate-x-1/2 bg-[conic-gradient(from_180deg,transparent_36%,rgba(248,245,238,0.04)_48%,rgba(201,168,76,0.03)_50%,rgba(248,245,238,0.04)_52%,transparent_64%)]" />
 
