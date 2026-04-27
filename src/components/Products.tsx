@@ -3,40 +3,30 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Reveal, revealDelays } from "@/components/Reveal";
-import { useCart } from "@/lib/cart";
 
 const products = [
   {
-    variantId: "hoshisora-gold-720",
-    handle: "hoshisora-gold",
     edition: "2023 Special Edition",
     name: "Amachi\nHoshisora",
     nameJp: "天地星空　黄金",
     specs: ["720ml", "15% vol", "純米大吟醸"],
     image: "/images/bottle_gold.jpg",
-    price: { amount: 28000, currencyCode: "JPY" as const },
     soldOut: true,
   },
   {
-    variantId: "hoshisora-blue-720",
-    handle: "hoshisora-blue",
     edition: "2025 Special Edition",
     name: "Amachi\nHoshisora",
     nameJp: "天地星空　蒼穹",
     specs: ["720ml", "15% vol", "純米大吟醸"],
     image: "/images/bottle_blue.jpg",
-    price: { amount: 28000, currencyCode: "JPY" as const },
     soldOut: true,
   },
   {
-    variantId: "fuji-reserve-720",
-    handle: "fuji-reserve",
     edition: "2026 Limited Edition",
     name: "Fuji\nReserve",
     nameJp: "富士山　限定醸造",
     specs: ["720ml", "Limited", "純米大吟醸"],
     image: "/images/bottle_nature.jpg",
-    price: { amount: 36000, currencyCode: "JPY" as const },
     soldOut: false,
   },
 ];
@@ -49,27 +39,11 @@ function ProductCard({
   index: number;
 }) {
   const [showSoldOut, setShowSoldOut] = useState(false);
-  const [added, setAdded] = useState(false);
-  const { add } = useCart();
 
   const handleClick = () => {
     if (product.soldOut) {
       setShowSoldOut(true);
     }
-  };
-
-  const handleAdd = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    add({
-      variantId: product.variantId,
-      handle: product.handle,
-      title: product.name.replace(/\n/g, " "),
-      variantTitle: product.edition,
-      image: product.image,
-      price: product.price,
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
   };
 
   const staggerDelay =
@@ -105,14 +79,6 @@ function ProductCard({
             <span key={spec}>{spec}</span>
           ))}
         </div>
-        {!product.soldOut && (
-          <button
-            onClick={handleAdd}
-            className="mt-5 px-5 py-2.5 bg-gold/90 hover:bg-gold text-ink text-[10px] tracking-[3px] uppercase transition-colors w-fit"
-          >
-            {added ? "Added ✓" : `Add — ¥${product.price.amount.toLocaleString()}`}
-          </button>
-        )}
       </div>
 
       {/* SOLD OUT overlay */}

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { useCart } from "@/lib/cart";
 
 const navLinks = [
   { href: "/story", label: "Story" },
@@ -18,7 +17,6 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const loginRef = useRef<HTMLLIElement>(null);
-  const { count: cartCount } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -104,28 +102,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-
-          {/* Cart */}
-          <li>
-            <Link
-              href="/cart"
-              onClick={closeMenus}
-              aria-label={`Cart (${cartCount} items)`}
-              className="relative flex items-center gap-2 text-[11px] tracking-[3px] uppercase text-off-white/70 hover:text-gold transition-colors duration-300 no-underline"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              Cart
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-3 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-gold text-ink text-[10px] font-medium px-1">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-          </li>
 
           {/* Login dropdown */}
           <li className="relative" ref={loginRef}>
