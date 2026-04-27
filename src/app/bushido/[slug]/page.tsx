@@ -13,9 +13,22 @@ const MotionLink = motion(Link);
 function useScrollY() {
   const [y, setY] = useState(0);
   useEffect(() => {
-    const h = () => setY(window.scrollY);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
+    let scheduled = false;
+    let frameId = 0;
+    const update = () => {
+      scheduled = false;
+      setY(window.scrollY);
+    };
+    const onScroll = () => {
+      if (scheduled) return;
+      scheduled = true;
+      frameId = window.requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
   }, []);
   return y;
 }

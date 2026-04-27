@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  memo,
   useEffect,
   useEffectEvent,
   useRef,
@@ -46,7 +47,10 @@ type BottleImageProps = {
   priority?: boolean;
 };
 
-function BottleImage({ design, priority = false }: BottleImageProps) {
+const BottleImage = memo(function BottleImage({
+  design,
+  priority = false,
+}: BottleImageProps) {
   return (
     <div className="opus-float relative w-[90%] max-w-[570px] aspect-[3/5]">
       <Image
@@ -59,7 +63,7 @@ function BottleImage({ design, priority = false }: BottleImageProps) {
       />
     </div>
   );
-}
+});
 
 function AmbientParticles() {
   return (
@@ -77,7 +81,11 @@ type DesignCardProps = {
   onMouseLeave: MouseEventHandler<HTMLAnchorElement>;
 };
 
-function DesignCard({ design, onMouseEnter, onMouseLeave }: DesignCardProps) {
+const DesignCard = memo(function DesignCard({
+  design,
+  onMouseEnter,
+  onMouseLeave,
+}: DesignCardProps) {
   return (
     <Link
       href={`/bushido/${design.slug}`}
@@ -112,9 +120,10 @@ function DesignCard({ design, onMouseEnter, onMouseLeave }: DesignCardProps) {
       </div>
     </Link>
   );
-}
+});
 
 export default function Bushido() {
+  const sectionRef = useRef<HTMLElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
   const transitionTimeoutRef = useRef<number | null>(null);
@@ -128,6 +137,7 @@ export default function Bushido() {
   );
   const [videoReady, setVideoReady] = useState(true);
   const [video2Ready, setVideo2Ready] = useState(true);
+  const [sectionInView, setSectionInView] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const video2Ref = useRef<HTMLVideoElement>(null);
 
@@ -137,6 +147,31 @@ export default function Bushido() {
     const v2 = video2Ref.current;
     if (v2 && v2.readyState >= 2) setVideo2Ready(true);
   }, []);
+
+  // Visibility gate: pause videos + cycle when section is offscreen.
+  useEffect(() => {
+    const target = sectionRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setSectionInView(entry.isIntersecting),
+      { rootMargin: "200px 0px", threshold: 0 },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    const v2 = video2Ref.current;
+    if (sectionInView) {
+      v?.play().catch(() => {});
+      v2?.play().catch(() => {});
+    } else {
+      v?.pause();
+      v2?.pause();
+    }
+  }, [sectionInView]);
 
   const currentDesign = bushidoDesigns[currentImage];
   const nextDesign = bushidoDesigns[nextImage];
@@ -156,6 +191,11 @@ export default function Bushido() {
       const target = parallaxRef.current;
 
       if (!hero || !target) {
+        return;
+      }
+
+      const rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) {
         return;
       }
 
@@ -207,6 +247,7 @@ export default function Bushido() {
   });
 
   useEffect(() => {
+    if (!sectionInView) return;
     const intervalId = window.setInterval(startImageCycle, IMAGE_CYCLE_INTERVAL_MS);
 
     return () => {
@@ -216,10 +257,10 @@ export default function Bushido() {
         window.clearTimeout(transitionTimeoutRef.current);
       }
     };
-  }, []);
+  }, [sectionInView]);
 
   return (
-    <section id="bushido">
+    <section id="bushido" ref={sectionRef}>
       {/* ===== FULL BLEED HERO — Dom Perignon style ===== */}
       <div ref={heroRef} className="relative h-screen overflow-hidden bg-ink">
         {/* Full-screen scene image with parallax zoom */}
@@ -256,7 +297,7 @@ export default function Bushido() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           onLoadedData={() => setVideoReady(true)}
           onCanPlay={() => setVideoReady(true)}
           onError={() => setVideoReady(false)}
@@ -326,7 +367,7 @@ export default function Bushido() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             onLoadedData={() => setVideo2Ready(true)}
             onCanPlay={() => setVideo2Ready(true)}
             onError={() => setVideo2Ready(false)}
