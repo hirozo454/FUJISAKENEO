@@ -85,20 +85,28 @@ function DesignCard({ design, onMouseEnter, onMouseLeave }: DesignCardProps) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="relative aspect-[3/5] overflow-hidden mb-2">
+      <div className="relative aspect-[3/5] overflow-hidden mb-3 border border-gold/10 group-hover:border-gold/40 transition-colors duration-700 bg-gradient-to-b from-ink2 via-ink to-ink">
+        {/* Ambient glow on hover */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_55%,rgba(201,168,76,0.18)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        {/* Top vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-ink/60 pointer-events-none" />
         <Image
           src={design.image}
           alt={design.name}
           fill
-          className="object-contain scale-[0.8] group-hover:scale-[0.95] transition-all duration-700 opacity-50 group-hover:opacity-100"
-          sizes="100px"
+          quality={95}
+          className="object-contain scale-[1.08] group-hover:scale-[1.18] transition-transform duration-[900ms] ease-out opacity-90 group-hover:opacity-100 drop-shadow-[0_25px_35px_rgba(0,0,0,0.6)]"
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
         />
+        {/* Floor reflection */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[8%] w-[60%] bg-[radial-gradient(ellipse,rgba(201,168,76,0.15)_0%,transparent_70%)] blur-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
       </div>
       <div className="text-center">
-        <p className="text-[10px] tracking-[3px] uppercase text-off-white/35 group-hover:text-gold/80 transition-colors duration-500">
+        <p className="text-[11px] tracking-[4px] uppercase text-gold/55 group-hover:text-gold transition-colors duration-500 font-normal">
           {design.letter}
         </p>
-        <p className="text-[9px] tracking-[1px] uppercase text-off-white/25 group-hover:text-off-white/60 transition-colors duration-500 mt-0.5">
+        <div className="mx-auto my-1.5 h-px w-[14px] bg-gold/20 group-hover:w-[24px] group-hover:bg-gold/60 transition-all duration-500" />
+        <p className="text-[10px] tracking-[2px] uppercase text-off-white/45 group-hover:text-off-white/85 transition-colors duration-500 font-light">
           {formatDesignName(design.name)}
         </p>
       </div>
@@ -118,6 +126,14 @@ export default function Bushido() {
   const [displayedHoveredDesign, setDisplayedHoveredDesign] = useState<number | null>(
     null,
   );
+  const [videoReady, setVideoReady] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.readyState >= 2) setVideoReady(true);
+  }, []);
 
   const currentDesign = bushidoDesigns[currentImage];
   const nextDesign = bushidoDesigns[nextImage];
@@ -229,6 +245,25 @@ export default function Bushido() {
             sizes="100vw"
           />
         </div>
+
+        {/* Samurai katana highlight video overlay (auto-fallback to scene images if missing) */}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onLoadedData={() => setVideoReady(true)}
+          onCanPlay={() => setVideoReady(true)}
+          onError={() => setVideoReady(false)}
+          className={`absolute inset-0 w-full h-full object-cover brightness-[0.45] saturate-[0.85] contrast-[1.05] transition-opacity duration-[1500ms] ${
+            videoReady ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <source src="/videos/samurai-highlight.mp4" type="video/mp4" />
+          <source src="/videos/samurai-highlight.webm" type="video/webm" />
+        </video>
 
         {/* Dark vignette overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_45%,transparent_20%,rgba(14,12,10,0.7)_100%)]" />
@@ -354,7 +389,7 @@ export default function Bushido() {
           </Reveal>
 
           {/* Design Grid — Dom Perignon editorial grid */}
-          <Reveal className="grid grid-cols-4 gap-4" delay={revealDelays.d3}>
+          <Reveal className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6" delay={revealDelays.d3}>
             {bushidoDesigns.map((design, index) => (
               <DesignCard
                 key={design.letter}

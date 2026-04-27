@@ -40,7 +40,7 @@ export default function Story() {
           </Reveal>
           <Reveal className="font-jp text-[15px] font-light leading-[2.2] text-off-white/58 mt-9 pt-9 border-t border-gold/20" delay={revealDelays.d3}>
             富士山の麓、田貫湖のほとりで<br />
-            静かに醸される天地星空。<br />
+            静かに醸されるMt. Fuji Premium Sake。<br />
             星空を映す湖面のように<br />
             透明で深い味わいを一滴一滴に込めました。
           </Reveal>

@@ -24,7 +24,7 @@ export default function Footer() {
             Amachi Hoshisora
           </p>
           <p className="font-jp text-xs font-extralight tracking-[4px] text-silver mb-3">
-            天地星空　·　Mt. Fuji Sake Project
+            Mt. Fuji Premium Sake　·　Mt. Fuji Sake Project
           </p>
           <p className="text-[14px] text-off-white/55 mb-5 tracking-[1px]">
             By KONDO PHARMACY Co., Ltd.
