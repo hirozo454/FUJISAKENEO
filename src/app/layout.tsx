@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/lib/cart";
+import AgeGate from "@/components/AgeGate";
 
 export const metadata: Metadata = {
   title: "AMACHI HOSHISORA — Mt. Fuji Sake Project",
@@ -19,7 +21,12 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <CartProvider>
+          {children}
+          <AgeGate />
+        </CartProvider>
+      </body>
     </html>
   );
 }
