@@ -102,7 +102,6 @@ const DesignCard = memo(function DesignCard({
           src={design.image}
           alt={design.name}
           fill
-          quality={95}
           className="object-contain scale-[1.08] group-hover:scale-[1.18] transition-transform duration-[900ms] ease-out opacity-90 group-hover:opacity-100 drop-shadow-[0_25px_35px_rgba(0,0,0,0.6)]"
           sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 14vw"
         />
