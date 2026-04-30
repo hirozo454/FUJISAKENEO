@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Reveal, revealDelays } from "@/components/Reveal";
 
 export default function ContactPage() {
