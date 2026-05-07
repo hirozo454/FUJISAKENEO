@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>酒類通信販売 HP法令チェックリスト【更新版】— FUJISAN SAKE</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Yu Gothic', sans-serif; background: #f0f2f5; color: #222; }
+
+  .header {
+    background: #1a1a2e; color: white;
+    padding: 20px 32px; display: flex; align-items: center; gap: 16px;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header .subtitle { font-size: 12px; color: #aaa; margin-top: 4px; }
+  .header .badge { background: #38a169; color: white; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: auto; white-space:nowrap; }
+
+  .container { max-width: 1440px; margin: 0 auto; padding: 24px; }
+
+  .diff-box { background: #ebf8ff; border-left: 5px solid #3182ce; border-radius: 6px; padding: 14px 18px; margin-bottom: 20px; font-size: 12px; color: #2c5282; line-height: 1.7; }
+  .diff-box strong { color: #1a365d; }
+
+  .summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .summary-card { background: white; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
+  .summary-card .num { font-size: 34px; font-weight: 800; }
+  .summary-card .label { font-size: 11px; color: #666; margin-top: 4px; }
+  .summary-card.ng .num { color: #e53e3e; }
+  .summary-card.warn .num { color: #dd6b20; }
+  .summary-card.ok .num { color: #38a169; }
+  .summary-card.error .num { color: #805ad5; }
+
+  .layout { display: grid; grid-template-columns: 1fr 440px; gap: 20px; align-items: start; }
+  .left-col { display: flex; flex-direction: column; gap: 20px; }
+
+  .ss-panel { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .ss-panel h2 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+  .ss-panel h3 { font-size: 12px; font-weight: 700; color: #555; margin: 14px 0 6px; }
+  .ss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ss-item img { width: 100%; border: 1px solid #ddd; border-radius: 6px; display: block; }
+  .ss-item .cap { font-size: 10px; color: #666; margin-top: 4px; text-align: center; }
+
+  .page-table { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .page-table h2 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #1a1a2e; color: white; padding: 8px 10px; text-align: left; font-size: 11px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  tr:hover td { background: #f8f9fa; }
+  .page-badge { display:inline-block; background:#edf2f7; color:#4a5568; padding:2px 8px; border-radius:4px; font-size:11px; font-family:monospace; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; white-space:nowrap; }
+  .tag.ng   { background:#fff5f5; color:#e53e3e; border:1px solid #fed7d7; }
+  .tag.ok   { background:#f0fff4; color:#38a169; border:1px solid #c6f6d5; }
+  .tag.warn { background:#fffaf0; color:#dd6b20; border:1px solid #feebc8; }
+  .tag.new  { background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; }
+
+  .checklist { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .checklist h2 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+
+  .cat-head { font-size: 12px; font-weight: 700; color: white; padding: 6px 12px; border-radius: 6px; margin: 14px 0 8px; display:flex; align-items:center; gap:6px; }
+  .cat-head.r { background:#e53e3e; }
+  .cat-head.o { background:#dd6b20; }
+  .cat-head.b { background:#3182ce; }
+  .cat-head.g { background:#38a169; }
+  .cat-head.p { background:#805ad5; }
+
+  .item { display:flex; gap:8px; padding:7px 8px; border-radius:6px; margin-bottom:5px; border:1px solid transparent; font-size:12px; }
+  .item.ng   { background:#fff5f5; border-color:#fed7d7; }
+  .item.ok   { background:#f0fff4; border-color:#c6f6d5; }
+  .item.warn { background:#fffaf0; border-color:#feebc8; }
+  .item.new  { background:#ebf8ff; border-color:#bee3f8; }
+
+  .ibadge { flex-shrink:0; width:44px; height:18px; border-radius:4px; font-size:10px; font-weight:700; color:white; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+  .ibadge.ng   { background:#e53e3e; }
+  .ibadge.ok   { background:#38a169; }
+  .ibadge.warn { background:#dd6b20; }
+  .ibadge.new  { background:#2b6cb0; }
+
+  .itext .t { font-weight:600; color:#333; line-height:1.3; }
+  .itext .d { color:#666; margin-top:2px; line-height:1.4; }
+  .itext .law { color:#999; margin-top:3px; font-style:italic; font-size:10px; }
+  .prev { color:#aaa; text-decoration:line-through; font-size:10px; }
+
+  .warn-box { background:#fffff0; border:1px solid #f6e05e; border-radius:8px; padding:12px 16px; font-size:11px; color:#744210; margin-top:14px; line-height:1.7; }
+
+  .sources { background:white; border-radius:12px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-top:20px; }
+  .sources h2 { font-size:14px; font-weight:700; color:#333; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #e2e8f0; }
+  .src { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid #f0f0f0; font-size:11px; line-height:1.5; }
+  .src:last-child { border-bottom:none; }
+  .src-n { background:#3182ce; color:white; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; margin-top:1px; }
+  .src a { color:#3182ce; text-decoration:none; }
+
+  @media(max-width:960px){ .layout{grid-template-columns:1fr;} .summary{grid-template-columns:repeat(2,1fr);} .ss-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🍶 酒類通信販売 HP 法令チェックリスト【再チェック版】</h1>
+    <div class="subtitle">対象サイト: https://fujisan.bbbyk105.workers.dev/ ｜チェック日: 2026年5月7日（再チェック）｜根拠: 国税庁公式HP</div>
+  </div>
+  <div class="badge">大幅改善・残課題2件</div>
+</div>
+
+<div class="container">
+
+  <div class="diff-box">
+    <strong>📋 前回チェック（NG 9件・警告 4件）からの改善状況：</strong><br>
+    ✅ 年齢確認ゲート（Age Gate）→ <strong>実装済み</strong>｜
+    ✅ 「20歳未満の者の飲酒は法律で禁止されています」日本語表示 → <strong>全ページ対応済み</strong>｜
+    ✅ 特定商取引法ページ（/tokushoho）→ <strong>新設・全項目記載済み</strong>｜
+    ✅ 酒類販売管理者標識（5項目）→ <strong>完備</strong>｜
+    ✅ 事業者情報（住所・代表者・電話・メール）→ <strong>記載済み</strong><br>
+    🔴 <strong>残課題：</strong> ①全商品ページ 404 エラー（購入不可）｜② 通信販売酒類小売業免許番号がプレースホルダー（〇〇のまま）
+  </div>
+
+  <div class="summary">
+    <div class="summary-card ng"><div class="num">2</div><div class="label">🔴 NG（未対応）</div></div>
+    <div class="summary-card warn"><div class="num">1</div><div class="label">🟠 要対応・部分対応</div></div>
+    <div class="summary-card ok"><div class="num">12</div><div class="label">🟢 対応済み</div></div>
+    <div class="summary-card error"><div class="num">前回9→2</div><div class="label">📉 NG件数の大幅削減</div></div>
+  </div>
+
+  <div class="layout">
+    <div class="left-col">
+
+      <!-- スクリーンショット -->
+      <div class="ss-panel">
+        <h2>📸 注釈付きスクリーンショット（2026年5月7日 実撮影）</h2>
+        <p style="font-size:11px;color:#666;margin-bottom:12px;">色枠の意味：🟢緑＝適合 ／ 🔴赤＝不適合 ／ 🟠橙＝要対応</p>
+
+        <div class="ss-grid">
+          <div class="ss-item">
+            <img src="ann_01_agegate.png" alt="年齢確認ゲート">
+            <div class="cap">①② トップページ — 年齢確認ゲート（適合）</div>
+          </div>
+          <div class="ss-item">
+            <img src="ann_02_top.png" alt="トップページ全体">
+            <div class="cap">③④⑦ トップページ全体 — 商品価格なし（NG）・各種フッター表示</div>
+          </div>
+          <div class="ss-item">
+            <img src="ann_03_tokushoho.png" alt="特定商取引法ページ">
+            <div class="cap">⑤⑧ 特定商取引法ページ — 管理者標識OK・免許番号プレースホルダー</div>
+          </div>
+          <div class="ss-item">
+            <img src="ann_04_product404.png" alt="商品ページ404">
+            <div class="cap">⑥ 商品ページ /products/* — 全て 404 エラー（致命的）</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ページ別確認表 -->
+      <div class="page-table">
+        <h2>📄 ページ別 確認結果（再チェック）</h2>
+        <table>
+          <thead>
+            <tr><th>ページ</th><th>状態</th><th>確認内容</th><th>判定</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="page-badge">/</span> トップ</td>
+              <td>✅ 表示OK</td>
+              <td>年齢確認ゲート・飲酒禁止表示・フッター特商法リンク <strong>全て対応済み</strong>。商品一覧に価格表示なし（商品ページが404のため）。</td>
+              <td><span class="tag warn">部分</span></td>
+            </tr>
+            <tr>
+              <td><span class="page-badge">/tokushoho</span></td>
+              <td>✅ 表示OK</td>
+              <td>特定商取引法 全13項目記載。事業者名・住所・電話・メール・送料・返品条件・酒類販売管理者標識5項目 完備。<br>ただし通信販売酒類小売業免許番号が「〇〇税務署 酒類指令第〇〇号 <strong>[要確認]</strong>」のままでプレースホルダー。</td>
+              <td><span class="tag warn">部分</span></td>
+            </tr>
+            <tr>
+              <td><span class="page-badge">/terms</span></td>
+              <td>✅ 表示OK</td>
+              <td>英語・日本語の飲酒禁止表示を確認済み。フッターでも常時表示。</td>
+              <td><span class="tag ok">OK</span></td>
+            </tr>
+            <tr>
+              <td><span class="page-badge">/shipping</span></td>
+              <td>✅ 表示OK</td>
+              <td>配送・返品条件記載あり。特商法ページ（/tokushoho）との連携OK。</td>
+              <td><span class="tag ok">OK</span></td>
+            </tr>
+            <tr>
+              <td><span class="page-badge">/privacy</span></td>
+              <td>✅ リンクあり</td>
+              <td>フッターよりリンク確認済み。</td>
+              <td><span class="tag ok">OK</span></td>
+            </tr>
+            <tr>
+              <td><span class="page-badge">/products/*</span></td>
+              <td>❌ 404 エラー</td>
+              <td>全6商品ページ（honjozo/junmai/daiginjo-aroma/daiginjo-rich/junmai-bold/junmai-ginjo）が 404。<br>前回の Error 1102 → 今回は 404。購入申込画面の年齢記載欄も確認不能。<strong>販売機能が完全に停止している。</strong></td>
+              <td><span class="tag ng">NG（致命的）</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 根拠法令 -->
+      <div class="sources">
+        <h2>📌 根拠法令・国税庁公式ページ</h2>
+        <div class="src">
+          <div class="src-n">1</div>
+          <div>
+            <strong>二十歳未満の者の飲酒防止に関する表示基準（国税庁告示第9号）</strong><br>
+            第7条：①広告/HP表示 ②申込画面の年齢記載欄 ③納品書通知 を義務付け ／ 第8条：文字サイズ規定<br>
+            <a href="https://www.nta.go.jp/taxes/sake/hyoji/miseinen/kokuji891122/01.htm" target="_blank">NTA公式ページ</a>
+          </div>
+        </div>
+        <div class="src">
+          <div class="src-n">2</div>
+          <div>
+            <strong>酒類販売管理者制度・標識の掲示義務（酒類業組合法 第86条の9）</strong><br>
+            ①販売場名称・所在地 ②管理者氏名 ③受講日 ④次回受講期限 ⑤研修団体名 の5項目掲示が義務<br>
+            <a href="https://www.nta.go.jp/taxes/sake/hambai/mokuji.htm" target="_blank">NTA公式ページ</a>
+          </div>
+        </div>
+        <div class="src">
+          <div class="src-n">3</div>
+          <div>
+            <strong>通信販売酒類小売業免許（酒税法 第9条）</strong><br>
+            免許取得が必須。免許番号はHP上での開示が推奨される（業界標準）。<br>
+            <a href="https://www.nta.go.jp/taxes/sake/menkyo/tebiki/youshiki_h21.htm" target="_blank">NTA公式ページ</a>
+          </div>
+        </div>
+        <div class="src">
+          <div class="src-n">4</div>
+          <div>
+            <strong>特定商取引法 通信販売の広告表示義務（特定商取引法 第11条）</strong><br>
+            事業者名・住所・電話・価格・送料・支払方法・引渡時期・返品条件の表示が義務<br>
+            <a href="https://www.no-trouble.caa.go.jp/what/mailorder/" target="_blank">消費者庁 特定商取引法ガイド（通信販売）</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右: チェックリスト -->
+    <div>
+      <div class="checklist">
+        <h2>✅ 法令チェックリスト（再チェック結果）</h2>
+
+        <div class="cat-head g">🟢 A. 年齢確認・飲酒防止表示（国税庁告示 第7・8条）</div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">年齢確認ゲート（Age Gate）</div>
+            <div class="d">初回アクセス時に「あなたは20歳以上ですか？」モーダルが表示される。日本語・英語併記。「はい（20歳以上）」「いいえ」の2択。</div>
+            <div class="prev">前回: NG → 今回: OK（新規実装）</div>
+            <div class="law">根拠: 告示第7条第2号</div>
+          </div>
+        </div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">HP全体に日本語の飲酒禁止表示</div>
+            <div class="d">「20歳未満の者の飲酒は法律で禁止されています」「20歳未満の者には酒類を販売いたしません」がフッターと年齢ゲートに表示。</div>
+            <div class="prev">前回: NG → 今回: OK（新規追加）</div>
+            <div class="law">根拠: 告示第7条第1号</div>
+          </div>
+        </div>
+
+        <div class="item warn">
+          <div class="ibadge warn">要確認</div>
+          <div class="itext">
+            <div class="t">購入申込画面の年齢記載欄</div>
+            <div class="d">商品ページが404のため確認不能。ページ復旧後、申込画面への生年月日記載欄＋飲酒禁止表示の近接配置が必要。</div>
+            <div class="law">根拠: 告示第7条第2号</div>
+          </div>
+        </div>
+
+        <div class="cat-head g">🟢 B. 酒類販売管理者 標識（5項目）</div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">① 販売場の名称及び所在地</div>
+            <div class="d">株式会社 近藤薬局 ／ 〒417-0051 静岡県富士市吉原 2-8-21（/tokushohoに明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">② 酒類販売管理者の氏名</div>
+            <div class="d">近藤 弘人（/tokushohoに明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">③ 酒類販売管理研修受講年月日</div>
+            <div class="d">2024年5月23日（/tokushohoに明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">④ 次回研修受講期限</div>
+            <div class="d">2027年5月22日（/tokushohoに明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">⑤ 研修実施団体名</div>
+            <div class="d">静岡県小売酒販組合連合会（/tokushohoに明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+
+        <div class="cat-head g">🟢 C. 特定商取引法（通信販売の表示義務）</div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">「特定商取引法に基づく表示」ページ</div>
+            <div class="d">/tokushoho に新設。フッターからリンクあり。13項目を完備。</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">販売業者名・代表者名・住所・電話番号・メール</div>
+            <div class="d">株式会社 近藤薬局 ／ 代表取締役 近藤 弘人 ／ 〒417-0051 静岡県富士市吉原 2-8-21 ／ TEL 070-9323-4144 ／ mtfujipharmacy@gmail.com</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">送料・手数料の明記</div>
+            <div class="d">全国一律1,100円（税込）、北海道・沖縄追加あり、クール便+330円、代引手数料330円（/tokushoho 明記）</div>
+            <div class="prev">前回: NG → 今回: OK</div>
+          </div>
+        </div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">返品・交換条件</div>
+            <div class="d">「開栓後・お客様都合での返品不可。配送破損等は到着後7日以内にメール連絡」と明記。</div>
+          </div>
+        </div>
+
+        <div class="item ng">
+          <div class="ibadge ng">NG</div>
+          <div class="itext">
+            <div class="t">商品の販売価格（各商品ページ）</div>
+            <div class="d">商品ページが全て404のため価格確認・表示が不可能な状態。特商法第11条が求める「販売価格（消費税込）」の表示要件を満たせていない。</div>
+            <div class="law">根拠: 特定商取引法 第11条</div>
+          </div>
+        </div>
+
+        <div class="cat-head r">🔴 D. 免許・商品ページ（要対応）</div>
+
+        <div class="item ng">
+          <div class="ibadge ng">NG</div>
+          <div class="itext">
+            <div class="t">全商品ページ 404 エラー（最重要）</div>
+            <div class="d">/products/honjozo、/junmai、/daiginjo-aroma、/daiginjo-rich、/junmai-bold、/junmai-ginjo の全6ページが404。前回の Error 1102 から状況変化。<strong>販売機能が完全停止しており通信販売として機能しない。</strong></div>
+          </div>
+        </div>
+
+        <div class="item warn">
+          <div class="ibadge warn">要対応</div>
+          <div class="itext">
+            <div class="t">通信販売酒類小売業免許番号がプレースホルダー</div>
+            <div class="d">/tokushoho に「〇〇税務署 酒類指令第〇〇号 [要確認]」と表示されたまま。実際の免許番号に差し替えが必要。</div>
+            <div class="law">根拠: 酒税法 第9条</div>
+          </div>
+        </div>
+
+        <div class="item ok">
+          <div class="ibadge ok">✓ OK</div>
+          <div class="itext">
+            <div class="t">PRIVACY POLICY・TERMS OF USE・SHIPPING & RETURNS・FAQ</div>
+            <div class="d">フッターにリンクあり、各ページ表示可能。</div>
+          </div>
+        </div>
+
+        <div class="warn-box">
+          ⚠️ <strong>販売開始前に対応が必要な残課題：</strong><br>
+          1. 🔴【最優先】全商品ページの 404 エラーを修正（Cloudflare Worker のルーティング/デプロイ確認）<br>
+          2. 🟠 /tokushoho の通信販売酒類小売業免許番号を実際の番号に更新<br>
+          3. 🟠 商品ページ復旧後、購入申込画面に年齢記載欄＋飲酒禁止表示を近接配置（告示第7条第2号）
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
